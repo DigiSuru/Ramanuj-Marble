@@ -7,7 +7,7 @@ const AboutPage = () => (
     <div className="bg-slate-900 py-20 text-center relative overflow-hidden">
       <img src="https://images.unsplash.com/photo-1544085023-e2bc00ee200c?auto=format&fit=crop&q=80" alt="Marble texture" className="absolute inset-0 w-full h-full object-cover opacity-20" />
       <div className="relative z-10">
-        <h1 className="text-4xl md:text-5xl font-serif text-white mb-4">About Sahara Marble</h1>
+        <h1 className="text-4xl md:text-5xl font-serif text-white mb-4">About Ramanuj Marble</h1>
         <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
       </div>
     </div>
@@ -17,7 +17,7 @@ const AboutPage = () => (
         <div>
           <h2 className="text-3xl font-serif text-slate-900 mb-6">The Legacy of Makrana</h2>
           <p className="text-slate-600 mb-4 leading-relaxed">
-            Founded over 30 years ago, Sahara Marble & Temple Works stands at the intersection of traditional artistry and modern precision. Located in Makrana, Rajasthan—the sole source of the marble used in the Taj Mahal—we possess an intimate understanding of this divine stone.
+            Founded over 30 years ago, Ramanuj Marble stands at the intersection of traditional artistry and modern precision. Located in Makrana, Rajasthan—the sole source of the marble used in the Taj Mahal—we possess an intimate understanding of this divine stone.
           </p>
           <p className="text-slate-600 leading-relaxed mb-6">
             Our mission is to preserve the ancient art of stone carving while providing our global clients with unparalleled quality in marble temples, statues, and premium architectural slabs. Every piece that leaves our workshop carries the soul of the artisan and the purity of the stone.

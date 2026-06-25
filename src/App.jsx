@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import WhatsAppButton from './components/common/WhatsAppButton';
@@ -7,16 +8,25 @@ import AboutPage from './pages/AboutPage';
 import ProductsPage from './pages/ProductsPage';
 import GalleryPage from './pages/GalleryPage';
 import ContactPage from './pages/ContactPage';
-import './App.css'; // Make sure this is imported if there are any specific styles
 
-export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+// Admin Components
+import AdminLogin from './pages/admin/Login';
+import DashboardLayout from './pages/admin/DashboardLayout';
+import ProductsManager from './pages/admin/ProductsManager';
+import GalleryManager from './pages/admin/GalleryManager';
+import InquiriesManager from './pages/admin/InquiriesManager';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    // Scroll to top on page change
     window.scrollTo(0, 0);
-  }, [currentPage]);
+  }, [pathname]);
 
+  return null;
+}
+
+export default function App() {
   // Prevent background scrolling when a modal is open
   useEffect(() => {
     const hasModalOpen = document.querySelector('.fixed.inset-0.z-\\[100\\]');
@@ -26,33 +36,50 @@ export default function App() {
       document.body.style.overflow = 'unset';
     }
     
-    // Cleanup on unmount
     return () => {
       document.body.style.overflow = 'unset';
     };
   });
 
-  const renderPage = () => {
-    switch(currentPage) {
-      case 'home': return <HomePage setCurrentPage={setCurrentPage} />;
-      case 'about': return <AboutPage />;
-      case 'products': return <ProductsPage setCurrentPage={setCurrentPage} />;
-      case 'gallery': return <GalleryPage />;
-      case 'contact': return <ContactPage />;
-      default: return <HomePage setCurrentPage={setCurrentPage} />;
-    }
-  };
-
   return (
     <div className="font-sans text-slate-900 selection:bg-amber-200 selection:text-slate-900">
-      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <ScrollToTop />
       
-      <main>
-        {renderPage()}
-      </main>
-
-      <Footer setCurrentPage={setCurrentPage} />
-      <WhatsAppButton />
+      {/* 
+        We use a wildcard for public routes so that we can have a separate 
+        layout for /admin routes without the public Navbar and Footer.
+      */}
+      <Routes>
+        {/* Admin Routes */}
+        <Route path="/admin">
+          <Route index element={<AdminLogin />} />
+          <Route path="dashboard" element={<DashboardLayout />}>
+            <Route index element={<Navigate to="products" replace />} />
+            <Route path="products" element={<ProductsManager />} />
+            <Route path="gallery" element={<GalleryManager />} />
+            <Route path="inquiries" element={<InquiriesManager />} />
+            <Route path="settings" element={<div className="p-8">Settings coming soon</div>} />
+          </Route>
+        </Route>
+        
+        <Route path="*" element={
+          <>
+            <Navbar />
+            <main>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/gallery" element={<GalleryPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="*" element={<HomePage />} />
+              </Routes>
+            </main>
+            <Footer />
+            <WhatsAppButton />
+          </>
+        } />
+      </Routes>
     </div>
   );
 }

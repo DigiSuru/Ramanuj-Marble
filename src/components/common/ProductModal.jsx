@@ -34,17 +34,22 @@ const ProductModal = ({ product, onClose, onInquire }) => {
         {/* Details Section */}
         <div className="md:w-1/2 p-6 md:p-10 flex flex-col overflow-y-auto">
           <h2 className="text-2xl md:text-3xl font-serif text-slate-900 mb-2">{product.name}</h2>
-          <div className="text-amber-600 font-medium text-lg mb-6 pb-4 border-b border-gray-100">{product.price}</div>
+          <div className="text-amber-600 font-medium text-lg mb-6 pb-4 border-b border-gray-100">{product.price || "Price on Request"}</div>
           
           <div className="flex-1">
             <h3 className="text-sm tracking-[0.1em] uppercase text-slate-400 font-bold mb-2">Description</h3>
             <p className="text-slate-600 leading-relaxed mb-6">
-              {product.description}
+              {product.description || "Handcrafted from pure Makrana white marble, this premium piece features intricate carvings and a highly polished finish that resists yellowing over time. Perfect for creating a divine focal point in your space."}
             </p>
 
             <h3 className="text-sm tracking-[0.1em] uppercase text-slate-400 font-bold mb-3">Ideal Applications</h3>
             <ul className="space-y-3 mb-8">
-              {product.applications.map((app, idx) => (
+              {(product.applications && product.applications.length > 0 ? product.applications : [
+                "Home Pooja Rooms",
+                "Office Reception Temples",
+                "Spiritual Centers",
+                "Premium Gifting"
+              ]).map((app, idx) => (
                 <li key={idx} className="flex items-start text-slate-700 text-sm">
                   <CheckCircleIcon size={18} className="text-amber-500 mr-2 shrink-0 mt-0.5" />
                   <span>{app}</span>
@@ -64,7 +69,7 @@ const ProductModal = ({ product, onClose, onInquire }) => {
               Enquire via Form
             </button>
             <a 
-              href={`https://wa.me/${CONTACT_INFO.whatsapp.replace(/[^0-9]/g, '')}?text=Hello Sahara Marble, I am interested in inquiring about the *${product.name}*.`}
+              href={`https://wa.me/${CONTACT_INFO.whatsapp.replace(/[^0-9]/g, '')}?text=Hello Ramanuj Marble, I am interested in inquiring about the *${product.name}*.`}
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center justify-center bg-[#25D366] text-white p-3 md:p-4 hover:bg-[#20b858] transition-colors rounded"

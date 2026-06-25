@@ -1,7 +1,7 @@
 export const CONTACT_INFO = {
   phone: "+91 XXXXXXXXXX",
   whatsapp: "+91 9252145887",
-  email: "info@saharamarble.com",
+  email: "info@ramanujmarble.com",
   address: "Makrana Road, Makrana, Rajasthan 341505, India"
 };
 

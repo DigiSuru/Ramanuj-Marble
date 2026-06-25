@@ -1,19 +1,49 @@
 import { useState } from 'react';
 import { MapPinIcon, PhoneIcon, MailIcon, CheckCircleIcon } from '../components/icons/Icons';
 import { CONTACT_INFO } from '../data/mockData';
+import { supabase } from '../lib/supabaseClient';
 
 const ContactPage = () => {
   const [formState, setFormState] = useState({ name: '', email: '', phone: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate API call
+    
+    const { name, email, phone, message } = formState;
+
+    try {
+      // 1. Save to Database
+      const { error } = await supabase
+        .from('inquiries')
+        .insert([{ name, email, phone, message }]);
+
+      if (error) {
+        console.error("Database insert error:", error);
+      }
+    } catch (err) {
+      console.error("Failed to save inquiry:", err);
+    }
+
+    // 2. Open WhatsApp
+    const text = `*New Inquiry from Website*%0A%0A*Name:* ${name}%0A*Phone:* ${phone}${email ? `%0A*Email:* ${email}` : ''}%0A*Requirements:* ${message}`;
+    const whatsappNumber = CONTACT_INFO.whatsapp.replace(/[^0-9]/g, '');
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${text}`;
+    window.open(whatsappUrl, '_blank');
+
+    // 3. Open Email Client (mailto)
+    const emailSubject = encodeURIComponent(`New Website Inquiry from ${name}`);
+    const emailBody = encodeURIComponent(`Name: ${name}\nPhone: ${phone}\nEmail: ${email}\n\nRequirements:\n${message}`);
+    const mailtoUrl = `mailto:${CONTACT_INFO.email}?subject=${emailSubject}&body=${emailBody}`;
+    
+    // We open email in the same window (or new window) after a short delay so WhatsApp opens first
     setTimeout(() => {
-      setIsSubmitted(true);
-      setFormState({ name: '', email: '', phone: '', message: '' });
-      setTimeout(() => setIsSubmitted(false), 5000);
-    }, 1000);
+      window.location.href = mailtoUrl;
+    }, 500);
+    
+    setIsSubmitted(true);
+    setFormState({ name: '', email: '', phone: '', message: '' });
+    setTimeout(() => setIsSubmitted(false), 5000);
   };
 
   return (
@@ -74,7 +104,7 @@ const ContactPage = () => {
               <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg text-center">
                 <CheckCircleIcon size={48} className="mx-auto mb-4 text-green-500" />
                 <h3 className="text-xl font-bold mb-2">Message Sent Successfully!</h3>
-                <p>Thank you for contacting Sahara Marble. Our team will get back to you shortly.</p>
+                <p>Thank you for contacting Ramanuj Marble. Our team will get back to you shortly.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">

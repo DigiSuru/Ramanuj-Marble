@@ -1,10 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRightIcon, CheckCircleIcon } from '../components/icons/Icons';
-import { PRODUCTS } from '../data/mockData';
 import ProductModal from '../components/common/ProductModal';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 
-const HomePage = ({ setCurrentPage }) => {
+const HomePage = () => {
+  const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('is_featured', true)
+        .order('created_at', { ascending: false })
+        .limit(3);
+      setProducts(data || []);
+      setLoading(false);
+    };
+    fetchProducts();
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -29,20 +47,21 @@ const HomePage = ({ setCurrentPage }) => {
           <p className="text-gray-200 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
             From divine temple structures to premium Makrana slabs. Discover the finest craftsmanship from the heart of Rajasthan.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6">
-            <button 
-              onClick={() => setCurrentPage('products')}
-              className="bg-amber-600 text-white px-8 py-4 uppercase tracking-wider text-sm font-semibold hover:bg-amber-700 transition-colors w-full sm:w-auto"
-            >
-              Explore Collection
-            </button>
-            <button 
-              onClick={() => setCurrentPage('contact')}
-              className="border border-white text-white px-8 py-4 uppercase tracking-wider text-sm font-semibold hover:bg-white hover:text-slate-900 transition-colors w-full sm:w-auto flex items-center justify-center"
-            >
-              Request Inquiry <ArrowRightIcon size={18} className="ml-2" />
-            </button>
-          </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+              <Link 
+                to="/products"
+                className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 uppercase tracking-widest text-xs font-bold transition-all shadow-lg inline-flex items-center group cursor-pointer"
+                onClick={() => navigate('/about')}
+              >
+                Explore Collection
+              </Link>
+              <Link 
+                to="/contact"
+                className="border-2 border-white/80 hover:bg-white hover:text-slate-900 text-white px-8 py-4 uppercase tracking-widest text-sm font-bold transition-all backdrop-blur-sm group"
+              >
+                Request Inquiry <ArrowRightIcon size={16} className="inline ml-2 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
         </div>
       </div>
 
@@ -65,7 +84,7 @@ const HomePage = ({ setCurrentPage }) => {
                 Generations of <br/>Master Craftsmanship
               </h3>
               <p className="text-slate-600 text-lg mb-6 leading-relaxed">
-                Based in Makrana, the city of world-renowned white marble, Sahara Marble & Temple Works has been a symbol of purity and artistic excellence for over three decades. We don't just cut stone; we breathe life into it.
+                Based in Makrana, the city of world-renowned white marble, Ramanuj Marble has been a symbol of purity and artistic excellence for over three decades. We don't just cut stone; we breathe life into it.
               </p>
               <ul className="space-y-4 mb-8">
                 {[
@@ -80,7 +99,7 @@ const HomePage = ({ setCurrentPage }) => {
                 ))}
               </ul>
               <button 
-                onClick={() => setCurrentPage('about')}
+                onClick={() => navigate('/about')}
                 className="group flex items-center text-amber-700 font-bold uppercase tracking-wider text-sm"
               >
                 Read Our Story 
@@ -100,8 +119,14 @@ const HomePage = ({ setCurrentPage }) => {
             <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {PRODUCTS.filter(p => p.isFeatured).map(product => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {loading ? (
+              [1, 2, 3].map(i => (
+                 <div key={i} className="group relative overflow-hidden bg-slate-100 rounded shadow-md animate-pulse h-[400px]"></div>
+              ))
+            ) : products.length === 0 ? (
+              <div className="col-span-3 text-center text-slate-500 py-12">No products available.</div>
+            ) : products.map((product) => (
               <div 
                 key={product.id} 
                 className="bg-white group cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 rounded-lg overflow-hidden border border-gray-100 flex flex-col"
@@ -133,7 +158,7 @@ const HomePage = ({ setCurrentPage }) => {
           
           <div className="text-center mt-12">
             <button 
-              onClick={() => setCurrentPage('products')}
+              onClick={() => navigate('/products')}
               className="border-2 border-slate-900 text-slate-900 px-8 py-3 uppercase tracking-widest text-sm font-bold hover:bg-slate-900 hover:text-white transition-colors"
             >
               View All Products
@@ -157,7 +182,7 @@ const HomePage = ({ setCurrentPage }) => {
             Share your vision, dimensions, and reference designs. Our artisans will carve your imagination into reality with pure Makrana marble.
           </p>
           <button 
-            onClick={() => setCurrentPage('contact')}
+            onClick={() => navigate('/contact')}
             className="bg-amber-600 text-white px-10 py-4 uppercase tracking-wider font-bold hover:bg-amber-500 transition-colors shadow-lg shadow-amber-600/30"
           >
             Contact Our Experts
@@ -169,7 +194,7 @@ const HomePage = ({ setCurrentPage }) => {
       <ProductModal 
         product={selectedProduct} 
         onClose={() => setSelectedProduct(null)} 
-        onInquire={() => setCurrentPage('contact')}
+        onInquire={() => navigate('/contact')}
       />
     </div>
   );

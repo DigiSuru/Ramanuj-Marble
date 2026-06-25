@@ -1,14 +1,31 @@
-import { useState } from 'react';
-import { CATEGORIES, PRODUCTS } from '../data/mockData';
+import { useState, useEffect } from 'react';
+import { CATEGORIES } from '../data/mockData';
 import ProductModal from '../components/common/ProductModal';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 
-const ProductsPage = ({ setCurrentPage }) => {
+const ProductsPage = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+      setProducts(data || []);
+      setLoading(false);
+    };
+    fetchProducts();
+  }, []);
 
   const filteredProducts = activeCategory === "All" 
-    ? PRODUCTS 
-    : PRODUCTS.filter(p => p.category === activeCategory);
+    ? products 
+    : products.filter(p => p.category === activeCategory);
 
   return (
     <div className="pt-24 pb-20 bg-slate-50 min-h-screen">
@@ -71,18 +88,20 @@ const ProductsPage = ({ setCurrentPage }) => {
           ))}
         </div>
         
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-20 text-slate-500">
-            No products found in this category.
+        {loading ? (
+          <div className="text-center py-20 text-slate-500">Loading products...</div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-20">
+            <h3 className="text-2xl font-serif text-slate-700 mb-2">No Products Found</h3>
+            <p className="text-slate-500">Try selecting a different category.</p>
           </div>
-        )}
+        ) : null}
       </div>
 
-      {/* Modal Popup */}
       <ProductModal 
         product={selectedProduct} 
         onClose={() => setSelectedProduct(null)} 
-        onInquire={() => setCurrentPage('contact')}
+        onInquire={() => navigate('/contact')}
       />
     </div>
   );

@@ -1,73 +1,77 @@
-
+import { Link } from 'react-router-dom';
 import { InstagramIcon, FacebookIcon, ChevronRightIcon, MapPinIcon, PhoneIcon, MailIcon } from '../icons/Icons';
 import { CONTACT_INFO } from '../../data/mockData';
 
-const Footer = ({ setCurrentPage }) => (
-  <footer className="bg-slate-950 text-white pt-16 pb-8">
+const Footer = () => (
+  <footer className="bg-slate-900 text-gray-300 pt-20 pb-10 border-t-4 border-amber-600 relative overflow-hidden">
     <div className="container mx-auto px-4 md:px-8">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="md:col-span-1">
-          <h2 className="font-serif text-2xl font-bold tracking-wider mb-2 text-white">SAHARA</h2>
+          <h2 className="font-serif text-2xl font-bold tracking-wider mb-2 text-white">RAMANUJ</h2>
           <p className="text-amber-500 text-xs tracking-[0.2em] uppercase mb-6">Marble & Temple Works</p>
           <p className="text-gray-400 text-sm leading-relaxed mb-6">
             Pioneers in luxury marble craftsmanship from Makrana. We bring stones to life through divine murtis, majestic temples, and premium slabs.
           </p>
           <div className="flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-amber-500 transition-colors"><InstagramIcon size={20} /></a>
-            <a href="#" className="text-gray-400 hover:text-amber-500 transition-colors"><FacebookIcon size={20} /></a>
+            <a href="#" className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-amber-600 hover:border-amber-600 hover:text-white transition-all"><InstagramIcon size={18} /></a>
+            <a href="#" className="w-10 h-10 rounded-full border border-slate-700 flex items-center justify-center hover:bg-amber-600 hover:border-amber-600 hover:text-white transition-all"><FacebookIcon size={18} /></a>
           </div>
         </div>
         
         <div>
-          <h3 className="text-lg font-serif mb-6 border-b border-slate-800 pb-2">Quick Links</h3>
+          <h3 className="text-white font-medium uppercase tracking-wider text-sm mb-6">Quick Links</h3>
           <ul className="space-y-3">
-            {['Home', 'About', 'Products', 'Gallery', 'Contact'].map(item => (
-              <li key={item}>
-                <button 
-                  onClick={() => setCurrentPage(item.toLowerCase())}
-                  className="text-gray-400 hover:text-amber-500 text-sm transition-colors flex items-center"
-                >
-                  <ChevronRightIcon size={14} className="mr-2" /> {item}
-                </button>
+            {[
+              { path: '/about', label: 'Our Story' },
+              { path: '/products', label: 'Collections' },
+              { path: '/gallery', label: 'Gallery' },
+              { path: '/contact', label: 'Contact Us' }
+            ].map(link => (
+              <li key={link.label}>
+                <Link to={link.path} className="text-gray-400 hover:text-amber-500 transition-colors flex items-center text-sm">
+                  <ChevronRightIcon size={14} className="mr-2 opacity-50" />
+                  {link.label}
+                </Link>
               </li>
             ))}
           </ul>
         </div>
-
+        
         <div>
-          <h3 className="text-lg font-serif mb-6 border-b border-slate-800 pb-2">Our Products</h3>
+          <h3 className="text-white font-medium uppercase tracking-wider text-sm mb-6">Our Services</h3>
           <ul className="space-y-3">
-            {['Marble Temples', 'Marble Murtis', 'Statues & Arts', 'Marble Slabs', 'Custom Inlay Work'].map(item => (
+            {['Custom Temple Design', 'Deity Murtis', 'Premium Makrana Slabs', 'Architectural Carving'].map(item => (
               <li key={item}>
-                <span className="text-gray-400 text-sm flex items-center">
-                  <ChevronRightIcon size={14} className="mr-2" /> {item}
-                </span>
+                <a href="#" className="text-gray-400 hover:text-amber-500 transition-colors flex items-center text-sm">
+                  <ChevronRightIcon size={14} className="mr-2 opacity-50" />
+                  {item}
+                </a>
               </li>
             ))}
           </ul>
         </div>
-
+        
         <div>
-          <h3 className="text-lg font-serif mb-6 border-b border-slate-800 pb-2">Contact Us</h3>
+          <h3 className="text-white font-medium uppercase tracking-wider text-sm mb-6">Contact Us</h3>
           <ul className="space-y-4">
-            <li className="flex items-start text-gray-400 text-sm">
-              <MapPinIcon size={18} className="mr-3 text-amber-500 shrink-0 mt-0.5" />
-              <span>{CONTACT_INFO.address}</span>
+            <li className="flex items-start text-sm">
+              <MapPinIcon className="text-amber-500 mr-3 mt-1 flex-shrink-0" size={18} />
+              <span className="text-gray-400 leading-relaxed">{CONTACT_INFO.address}</span>
             </li>
-            <li className="flex items-center text-gray-400 text-sm">
-              <PhoneIcon size={18} className="mr-3 text-amber-500 shrink-0" />
-              <span>{CONTACT_INFO.phone}</span>
+            <li className="flex items-center text-sm">
+              <PhoneIcon className="text-amber-500 mr-3 flex-shrink-0" size={18} />
+              <span className="text-gray-400">{CONTACT_INFO.phone}</span>
             </li>
-            <li className="flex items-center text-gray-400 text-sm">
-              <MailIcon size={18} className="mr-3 text-amber-500 shrink-0" />
-              <span>{CONTACT_INFO.email}</span>
+            <li className="flex items-center text-sm">
+              <MailIcon className="text-amber-500 mr-3 flex-shrink-0" size={18} />
+              <span className="text-gray-400">{CONTACT_INFO.email}</span>
             </li>
           </ul>
         </div>
       </div>
       
       <div className="border-t border-slate-800 pt-8 text-center flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm">
-        <p>&copy; {new Date().getFullYear()} Sahara Marble & Temple Works. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Ramanuj Marble. All rights reserved.</p>
         <p className="mt-2 md:mt-0">Designed for Luxury & Elegance</p>
       </div>
     </div>
